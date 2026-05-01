@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Financeirinho">
+<title>Financeirinho</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#2E4A6A;
+  --cream:#FAF5EE;
+  --cream2:#F0E8DC;
+  --sand:#E4DCD0;
+  --red:#C04030;
+  --amber:#D4824A;
+  --green:#4A7A5A;
+  --text:#2A2018;
+  --muted:#887860;
+  --white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;padding-bottom:84px;animation:fi .25s ease;}
+.screen.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.hd{background:var(--navy);padding:54px 20px 22px;}
+.hd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.hd-sub{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1.2px;text-transform:uppercase;}
+.hd-title{font-size:17px;color:#fff;font-weight:500;margin-top:2px;}
+.av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;}
+.hd-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-bottom:4px;}
+.hd-amt{font-family:'DM Serif Display',serif;font-size:38px;color:#fff;margin-bottom:18px;line-height:1.1;}
+.hd-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.hd-card{background:rgba(255,255,255,.1);border-radius:11px;padding:9px 11px;}
+.hd-card-lbl{font-size:9px;color:rgba(255,255,255,.45);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+.hd-card-val{font-size:13px;font-weight:500;color:#fff;}
+.hd-card-val.d{color:#F0A878;}
+
+/* SECTION */
+.sec{padding:14px;display:flex;flex-direction:column;gap:11px;}
+.slbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+
+/* CARDS */
+.card{background:var(--white);border-radius:16px;padding:15px;border:.5px solid var(--sand);}
+.cn{background:var(--navy);border-radius:16px;padding:15px;}
+
+/* PROGRESS */
+.pt{height:6px;background:var(--cream2);border-radius:3px;overflow:hidden;margin:7px 0 4px;}
+.pf{height:100%;border-radius:3px;transition:width .8s ease;}
+
+/* CATEGORY */
+.ci{margin-bottom:9px;}
+.ci:last-child{margin-bottom:0;}
+.cr{display:flex;justify-content:space-between;margin-bottom:4px;}
+.cn2{font-size:12px;color:var(--text);}
+.cp{font-size:12px;font-weight:500;}
+.ct{height:5px;background:var(--cream2);border-radius:3px;overflow:hidden;}
+.cf{height:100%;border-radius:3px;}
+
+/* LANCAMENTO */
+.lr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:.5px solid var(--sand);}
+.lr:last-child{border-bottom:none;}
+.ln{font-size:13px;color:var(--text);}
+.ls{font-size:10px;color:var(--muted);margin-top:2px;}
+.lv{font-size:13px;font-weight:500;}
+.vd{color:var(--red);}
+.vr{color:var(--green);}
+
+/* STAT GRID */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sc{background:var(--white);border-radius:14px;padding:13px;border:.5px solid var(--sand);}
+.sl{font-size:9px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.sv{font-size:19px;font-weight:500;color:var(--navy);}
+.sv.dn{color:var(--red);}
+.sv.sf{color:var(--green);}
+.sv.am{color:var(--amber);}
+
+/* NAVY CARD */
+.nl{font-size:9px;color:rgba(255,255,255,.45);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.nv{font-family:'DM Serif Display',serif;font-size:26px;color:#fff;margin-bottom:8px;}
+.nt{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-bottom:5px;}
+.nf{height:100%;background:#F0A878;border-radius:3px;}
+.ns{font-size:10px;color:rgba(255,255,255,.4);}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--white);border-top:.5px solid var(--sand);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0 20px;z-index:100;}
+.bi{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:5px 0;}
+.bic{width:20px;height:20px;border-radius:6px;background:var(--sand);}
+.bi.active .bic{background:var(--navy);}
+.bil{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.bi.active .bil{color:var(--navy);font-weight:500;}
+
+/* LOADING */
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;background:var(--cream);}
+.dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--navy);animation:p 1s ease infinite;}
+.dot:nth-child(2){animation-delay:.18s;}
+.dot:nth-child(3){animation-delay:.36s;}
+@keyframes p{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.ltit{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);}
+.ltxt{font-size:12px;color:var(--muted);}
+
+/* FATURA HEADER */
+.fat-big{font-family:'DM Serif Display',serif;font-size:40px;color:#fff;line-height:1.1;margin:6px 0;}
+.fat-sub{font-size:10px;color:rgba(255,255,255,.45);}
+
+/* MISC */
+.empty{text-align:center;padding:24px 16px;color:var(--muted);font-size:12px;line-height:1.7;}
+.err{margin:20px;padding:20px;background:var(--white);border-radius:16px;border:.5px solid var(--sand);text-align:center;}
+.ert{font-size:14px;font-weight:500;color:var(--red);margin-bottom:8px;}
+.erm{font-size:12px;color:var(--muted);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="ltit">financeirinho</div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="ltxt">buscando seus dados...</div>
+</div>
+
+<div id="app" style="display:none;">
+
+<!-- TELA 1: GERAL -->
+<div class="screen active" id="screen-home">
+  <div class="hd">
+    <div class="hd-top">
+      <div><div class="hd-sub" id="periodo-lbl">carregando...</div><div class="hd-title">Olá, Thayla!</div></div>
+      <div class="av">T</div>
+    </div>
+    <div class="hd-lbl">saldo disponível</div>
+    <div class="hd-amt" id="h-saldo">—</div>
+    <div class="hd-cards">
+      <div class="hd-card"><div class="hd-card-lbl">receita</div><div class="hd-card-val" id="h-rec">—</div></div>
+      <div class="hd-card"><div class="hd-card-lbl">gastos</div><div class="hd-card-val d" id="h-gas">—</div></div>
+      <div class="hd-card"><div class="hd-card-lbl">investido</div><div class="hd-card-val" id="h-inv">—</div></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--navy);">fatura atual</div>
+          <div style="font-size:10px;color:var(--muted);" id="fat-dlbl">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--muted);">disponível</div>
+          <div style="font-size:15px;font-weight:500;" id="fat-disp">—</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+        <div style="font-size:11px;color:var(--muted);" id="fat-glbl">—</div>
+        <div style="font-size:11px;font-weight:500;" id="fat-pct">—</div>
+      </div>
+      <div class="pt"><div class="pf" id="fat-bar" style="width:0%"></div></div>
+      <div style="font-size:11px;" id="fat-alert"></div>
+    </div>
+
+    <div class="card">
+      <div class="slbl">gastos por categoria</div>
+      <div id="cat-list"><div class="empty">carregando...</div></div>
+    </div>
+
+    <div class="card">
+      <div class="slbl">últimos lançamentos</div>
+      <div id="lanc-list"><div class="empty">carregando...</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="cn">
+        <div class="nl">reserva</div>
+        <div class="nv" id="res-val">—</div>
+        <div class="nt"><div class="nf" id="res-bar" style="width:0%"></div></div>
+        <div class="ns" id="res-pct">—</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">dias fatura</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:42px;color:var(--navy);" id="dias-num">—</div>
+        <div style="font-size:10px;color:var(--muted);" id="dias-st"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TELA 2: FATURA -->
+<div class="screen" id="screen-fatura">
+  <div class="hd">
+    <div class="hd-top">
+      <div><div class="hd-sub">fatura</div><div class="hd-title">maio 2026</div></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.45);">25/03 – 23/04</div>
+    </div>
+    <div class="fat-sub">total gasto</div>
+    <div class="fat-big" id="ft-total">—</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <div class="fat-sub">de R$ 2.250</div>
+      <div style="font-size:11px;color:#F0A878;font-weight:500;" id="ft-pct">—</div>
+    </div>
+    <div style="height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;">
+      <div class="pf" id="ft-bar" style="width:0%;background:#F0A878;"></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sg">
+      <div class="sc"><div class="sl">disponível</div><div class="sv sf" id="ft-disp">—</div></div>
+      <div class="sc"><div class="sl">dias restantes</div><div class="sv" id="ft-dias">—</div></div>
+      <div class="sc"><div class="sl">média/dia</div><div class="sv dn" id="ft-med">—</div></div>
+      <div class="sc"><div class="sl">projeção</div><div class="sv am" id="ft-proj">—</div></div>
+    </div>
+    <div class="card">
+      <div class="slbl">categorias na fatura</div>
+      <div id="ft-cats"><div class="empty">carregando...</div></div>
+    </div>
+    <div class="card">
+      <div class="slbl">lançamentos</div>
+      <div id="ft-lancs"><div class="empty">carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TELA 3: RECEITAS -->
+<div class="screen" id="screen-receitas">
+  <div class="hd">
+    <div class="hd-top"><div><div class="hd-sub">receitas & investimentos</div><div class="hd-title">visão geral</div></div></div>
+    <div class="hd-lbl">total recebido</div>
+    <div class="hd-amt" id="rt-total">—</div>
+    <div class="hd-cards">
+      <div class="hd-card"><div class="hd-card-lbl">salário</div><div class="hd-card-val" id="rt-sal">—</div></div>
+      <div class="hd-card"><div class="hd-card-lbl">freela</div><div class="hd-card-val" id="rt-fre">—</div></div>
+      <div class="hd-card"><div class="hd-card-lbl">outros</div><div class="hd-card-val" id="rt-out">—</div></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="card">
+      <div class="slbl">origem das receitas</div>
+      <div id="rt-origens"><div class="empty">carregando...</div></div>
+    </div>
+    <div class="cn">
+      <div class="nl">reserva de emergência</div>
+      <div class="nv" id="iv-res">—</div>
+      <div class="nt"><div class="nf" id="iv-bar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;">
+        <div class="ns" id="iv-pct">—</div>
+        <div class="ns" id="iv-flt">—</div>
+      </div>
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sl">total investido</div><div class="sv" id="iv-tot">—</div></div>
+      <div class="sc"><div class="sl">meses p/ meta</div><div class="sv" id="iv-mes">—</div></div>
+    </div>
+    <div class="card">
+      <div class="slbl">lançamentos de receita</div>
+      <div id="rt-lancs"><div class="empty">carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TELA 4: HISTÓRICO -->
+<div class="screen" id="screen-historico">
+  <div class="hd">
+    <div class="hd-top"><div><div class="hd-sub">histórico</div><div class="hd-title">comparativo mensal</div></div></div>
+  </div>
+  <div class="sec">
+    <div class="empty" style="padding-top:60px;">
+      <div style="font-size:30px;margin-bottom:12px;">📊</div>
+      <div style="font-weight:500;color:var(--navy);margin-bottom:8px;font-size:14px;">em construção</div>
+      Conforme os meses forem passando,<br>aqui vai aparecer a evolução dos seus gastos.
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="bnav">
+  <div class="bi active" onclick="go('home')"><div class="bic"></div><div class="bil">geral</div></div>
+  <div class="bi" onclick="go('fatura')"><div class="bic"></div><div class="bil">fatura</div></div>
+  <div class="bi" onclick="go('receitas')"><div class="bic"></div><div class="bil">receitas</div></div>
+  <div class="bi" onclick="go('historico')"><div class="bic"></div><div class="bil">histórico</div></div>
+</nav>
+</div>
+
+<script>
+const API_KEY  = 'COLE_SUA_CHAVE_AQUI';
+const SHEET_ID = '1suyS2C78qQ0uc0w32DCKuPtCUGyt20usfWDoOqT0xDc';
+const META_FAT = 2250;
+const META_RES = 15000;
+const INIC = new Date(2026,2,25);
+const FIM  = new Date(2026,3,23);
+
+let D={desp:[],rec:[],inv:[],metas:[]};
+
+function fmt(v){return 'R$ '+Math.abs(+v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtK(v){const a=Math.abs(+v||0);return a>=1000?'R$ '+(a/1000).toFixed(1)+'k':fmt(v);}
+
+function pv(s){
+  if(s===null||s===undefined||s==='')return 0;
+  const n=parseFloat(String(s).replace(/\./g,'').replace(',','.'));
+  return isNaN(n)?0:n;
+}
+
+function pd(s){
+  if(!s)return null;
+  const str=String(s).trim();
+  // dd/mm/yyyy
+  const m=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+  // Serial number (days since 1899-12-30)
+  const n=parseFloat(str);
+  if(!isNaN(n)&&n>10000){
+    const b=new Date(1899,11,30);
+    b.setDate(b.getDate()+Math.floor(n));
+    return b;
+  }
+  const d=new Date(str);
+  return isNaN(d.getTime())?null:d;
+}
+
+function fd(d){
+  if(!d||isNaN(d.getTime()))return '';
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+}
+
+function norm(s){return(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+function clr(p){return p>=100?'var(--red)':p>=80?'var(--amber)':'var(--green)';}
+
+async function fetchS(range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('Erro HTTP '+r.status+' ao ler '+range);
+  return(await r.json()).values||[];
+}
+
+async function load(){
+  try{
+    const[dR,rR,iR,mR]=await Promise.all([
+      fetchS('Despesas!A2:G2000'),
+      fetchS('Receitas!A2:F2000'),
+      fetchS('Investimentos!A2:F2000'),
+      fetchS('Metas!A2:D2000')
+    ]);
+
+    // Despesas: A=carimbo B=data C=valor D=cat E=subcat F=pgto G=tag
+    D.desp=dR.filter(r=>r[2]&&pv(r[2])>0).map(r=>({
+      data:pd(r[1]),
+      valor:pv(r[2]),
+      cat:(r[3]||'').trim(),
+      subcat:(r[4]||'').trim(),
+      pgto:(r[5]||'').trim(),
+      tag:(r[6]||'').trim()
+    }));
+
+    // Receitas: A=carimbo B=data C=valor D=deOnde E=origem F=pgto
+    D.rec=rR.filter(r=>r[2]&&pv(r[2])>0).map(r=>({
+      data:pd(r[1]),
+      valor:pv(r[2]),
+      deOnde:(r[3]||'').trim(),
+      origem:(r[4]||'').trim(),
+      pgto:(r[5]||'').trim()
+    }));
+
+    // Investimentos: A=carimbo B=data C=valor D=obj E=onde F=saldo
+    D.inv=iR.filter(r=>r.length>2).map(r=>({
+      data:pd(r[1]),
+      valor:pv(r[2]),
+      obj:(r[3]||'').trim(),
+      onde:(r[4]||'').trim(),
+      saldo:pv(r[5])
+    }));
+
+    // Metas: A=mes B=cat C=subcat D=meta
+    D.metas=mR.filter(r=>r[1]&&pv(r[3])>0).map(r=>({
+      mes:(r[0]||'').trim(),
+      cat:(r[1]||'').trim(),
+      subcat:(r[2]||'').trim(),
+      meta:pv(r[3])
+    }));
+
+    renderAll();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='block';
+  }catch(e){
+    document.getElementById('loading').innerHTML=`
+      <div class="err">
+        <div class="ert">Erro ao carregar dados</div>
+        <div class="erm">${e.message}<br><br>Verifique se a chave de API está correta e se a planilha está pública para leitura.</div>
+      </div>`;
+  }
+}
+
+function renderAll(){rHome();rFatura();rReceitas();}
+
+function rHome(){
+  const tRec=D.rec.reduce((s,r)=>s+r.valor,0);
+  const tGas=D.desp.reduce((s,d)=>s+d.valor,0);
+  const tInv=D.inv.reduce((s,i)=>s+i.valor,0);
+  const saldo=tRec-tGas;
+
+  // Período
+  const dts=[...D.desp.map(d=>d.data),...D.rec.map(r=>r.data)].filter(d=>d&&!isNaN(d.getTime()));
+  if(dts.length){
+    const mn=new Date(Math.min(...dts)),mx=new Date(Math.max(...dts));
+    document.getElementById('periodo-lbl').textContent=fd(mn)+' – '+fd(mx);
+  }
+
+  document.getElementById('h-saldo').textContent=fmt(saldo);
+  document.getElementById('h-rec').textContent=fmtK(tRec);
+  document.getElementById('h-gas').textContent=fmtK(tGas);
+  document.getElementById('h-inv').textContent=fmtK(tInv);
+
+  // Fatura card
+  const fatD=D.desp.filter(d=>d.pgto==='Cartão de crédito'&&d.data>=INIC&&d.data<=FIM);
+  const fatT=fatD.reduce((s,d)=>s+d.valor,0);
+  const fatP=META_FAT>0?Math.round((fatT/META_FAT)*100):0;
+  const fatDisp=META_FAT-fatT;
+  const hoje=new Date();
+  const dias=Math.max(0,Math.round((FIM-hoje)/(864e5)));
+
+  document.getElementById('fat-dlbl').textContent='fecha em '+dias+' dias';
+  document.getElementById('fat-glbl').textContent=fmt(fatT)+' de '+fmt(META_FAT);
+  const pEl=document.getElementById('fat-pct');
+  pEl.textContent=fatP+'%';pEl.style.color=clr(fatP);
+  const bEl=document.getElementById('fat-bar');
+  bEl.style.width=Math.min(fatP,100)+'%';bEl.style.background=clr(fatP);
+  const dEl=document.getElementById('fat-disp');
+  dEl.textContent=fatDisp>=0?fmt(fatDisp):'- '+fmt(-fatDisp);
+  dEl.style.color=fatDisp<0?'var(--red)':'var(--navy)';
+  const aEl=document.getElementById('fat-alert');
+  if(fatDisp<0){aEl.textContent='estouro de '+fmt(-fatDisp);aEl.style.color='var(--red)';}
+  else if(fatDisp<400){aEl.textContent='apenas '+fmt(fatDisp)+' restando';aEl.style.color='var(--amber)';}
+  else aEl.textContent='';
+
+  // Categorias — usa comparação normalizada
+  const mCat={};
+  D.metas.forEach(m=>{
+    const k=norm(m.cat);
+    mCat[k]=(mCat[k]||0)+m.meta;
+    if(!mCat[k+'__label'])mCat[k+'__label']=m.cat;
+  });
+
+  const gCat={};
+  D.desp.forEach(d=>{
+    const k=norm(d.cat);
+    gCat[k]=(gCat[k]||0)+d.valor;
+  });
+
+  const catKeys=Object.keys(mCat).filter(k=>!k.endsWith('__label')&&mCat[k]>0);
+  catKeys.sort((a,b)=>((gCat[b]||0)/mCat[b])-((gCat[a]||0)/mCat[a]));
+
+  if(catKeys.length===0){
+    document.getElementById('cat-list').innerHTML='<div class="empty">Nenhuma categoria com meta configurada.</div>';
+  } else {
+    document.getElementById('cat-list').innerHTML=catKeys.map(k=>{
+      const g=gCat[k]||0,m=mCat[k]||1,p=Math.round((g/m)*100),c=clr(p);
+      const lbl=mCat[k+'__label']||k;
+      return`<div class="ci"><div class="cr"><div class="cn2">${lbl}</div><div class="cp" style="color:${c}">${p}%</div></div><div class="ct"><div class="cf" style="width:${Math.min(p,100)}%;background:${c};"></div></div></div>`;
+    }).join('');
+  }
+
+  // Últimos lançamentos
+  const ul=[...D.desp].sort((a,b)=>(b.data||0)-(a.data||0)).slice(0,8);
+  document.getElementById('lanc-list').innerHTML=ul.map(d=>`
+    <div class="lr">
+      <div><div class="ln">${d.tag||d.subcat||d.cat}</div><div class="ls">${d.subcat||d.cat} · ${fd(d.data)}</div></div>
+      <div class="lv vd">- ${fmt(d.valor)}</div>
+    </div>`).join('');
+
+  // Reserva
+  const saldos=D.inv.map(i=>i.saldo).filter(v=>v>0);
+  const sR=saldos.length>0?Math.max(...saldos):0;
+  const rP=META_RES>0?Math.round((sR/META_RES)*100):0;
+  document.getElementById('res-val').textContent=fmt(sR);
+  document.getElementById('res-bar').style.width=Math.min(rP,100)+'%';
+  document.getElementById('res-pct').textContent=rP+'% de R$ 15k';
+  document.getElementById('dias-num').textContent=dias;
+  document.getElementById('dias-st').textContent=dias<=5?'atenção!':dias<=10?'quase lá':'bom ritmo';
+}
+
+function rFatura(){
+  const fatD=D.desp.filter(d=>d.pgto==='Cartão de crédito'&&d.data>=INIC&&d.data<=FIM);
+  const tot=fatD.reduce((s,d)=>s+d.valor,0);
+  const pct=META_FAT>0?Math.round((tot/META_FAT)*100):0;
+  const disp=META_FAT-tot;
+  const hoje=new Date();
+  const dias=Math.max(0,Math.round((FIM-hoje)/(864e5)));
+  const dec=Math.max(1,Math.round((hoje-INIC)/(864e5)));
+  const tDias=Math.round((FIM-INIC)/(864e5));
+  const med=tot/dec,proj=med*tDias;
+
+  document.getElementById('ft-total').textContent=fmt(tot);
+  document.getElementById('ft-pct').textContent=pct+'%';
+  document.getElementById('ft-bar').style.width=Math.min(pct,100)+'%';
+  const dEl=document.getElementById('ft-disp');
+  dEl.textContent=disp>=0?fmt(disp):'- '+fmt(-disp);
+  dEl.className='sv '+(disp>=0?'sf':'dn');
+  document.getElementById('ft-dias').textContent=dias;
+  document.getElementById('ft-med').textContent=fmt(med);
+  document.getElementById('ft-proj').textContent=fmt(proj);
+
+  const pC={};fatD.forEach(d=>{pC[d.cat]=(pC[d.cat]||0)+d.valor;});
+  const sC=Object.entries(pC).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ft-cats').innerHTML=sC.length?sC.map(([c,v])=>{
+    const p=tot>0?Math.round((v/tot)*100):0;
+    return`<div class="ci"><div class="cr"><div class="cn2">${c}</div><div class="cp" style="color:var(--navy)">${fmt(v)}</div></div><div class="ct"><div class="cf" style="width:${p}%;background:var(--navy);"></div></div></div>`;
+  }).join(''):'<div class="empty">Nenhum gasto no cartão neste ciclo.</div>';
+
+  document.getElementById('ft-lancs').innerHTML=[...fatD].sort((a,b)=>(b.data||0)-(a.data||0)).map(d=>`
+    <div class="lr">
+      <div><div class="ln">${d.tag||d.subcat||d.cat}</div><div class="ls">${d.subcat||d.cat} · ${fd(d.data)}</div></div>
+      <div class="lv vd">- ${fmt(d.valor)}</div>
+    </div>`).join('');
+}
+
+function rReceitas(){
+  const tot=D.rec.reduce((s,r)=>s+r.valor,0);
+  document.getElementById('rt-total').textContent=fmt(tot);
+
+  const pO={};
+  D.rec.forEach(r=>{const k=r.deOnde||'Outros';pO[k]=(pO[k]||0)+r.valor;});
+
+  let sal=0,fre=0,out=0;
+  Object.entries(pO).forEach(([k,v])=>{
+    const kl=norm(k);
+    if(kl.includes('salario'))sal+=v;
+    else if(kl.includes('freela'))fre+=v;
+    else out+=v;
+  });
+  document.getElementById('rt-sal').textContent=fmtK(sal);
+  document.getElementById('rt-fre').textContent=fmtK(fre);
+  document.getElementById('rt-out').textContent=fmtK(out);
+
+  const cols=['var(--navy)','var(--red)','var(--amber)','var(--green)','#7B6FA0'];
+  document.getElementById('rt-origens').innerHTML=Object.entries(pO).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>`
+    <div class="lr">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:9px;height:9px;border-radius:2px;background:${cols[i%cols.length]};flex-shrink:0;"></div>
+        <div class="ln">${k}</div>
+      </div>
+      <div class="lv vr">${fmt(v)}</div>
+    </div>`).join('');
+
+  const saldos=D.inv.map(i=>i.saldo).filter(v=>v>0);
+  const sR=saldos.length>0?Math.max(...saldos):0;
+  const tI=D.inv.reduce((s,i)=>s+i.valor,0);
+  const rP=META_RES>0?Math.round((sR/META_RES)*100):0;
+  const flt=META_RES-sR;
+  const mes=flt>0?Math.ceil(flt/1500):0;
+
+  document.getElementById('iv-res').textContent=fmt(sR);
+  document.getElementById('iv-bar').style.width=Math.min(rP,100)+'%';
+  document.getElementById('iv-pct').textContent=rP+'% da meta';
+  document.getElementById('iv-flt').textContent='faltam '+fmt(flt);
+  document.getElementById('iv-tot').textContent=fmt(tI);
+  document.getElementById('iv-mes').textContent=mes>0?mes+' meses':'Meta atingida!';
+
+  document.getElementById('rt-lancs').innerHTML=[...D.rec].sort((a,b)=>(b.data||0)-(a.data||0)).map(r=>`
+    <div class="lr">
+      <div><div class="ln">${r.deOnde}</div><div class="ls">${r.origem||r.pgto} · ${fd(r.data)}</div></div>
+      <div class="lv vr">+ ${fmt(r.valor)}</div>
+    </div>`).join('');
+}
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.bi').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  const idx=['home','fatura','receitas','historico'].indexOf(id);
+  if(idx>=0)document.querySelectorAll('.bi')[idx].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+load();
+</script>
+</body>
+</html>
